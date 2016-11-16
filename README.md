@@ -17,9 +17,9 @@ Clone the repository or download a ZIP archive.
 
 Installation steps are straightforward:
 
-1. `npm install`
+1. `yarn install`
 2. Create a `.env` file to customize the server's configuration. See `.env.development` for examples and explanations.
-3. `npm start`
+3. `yarn start`
 
 To interact with the server, you must use a web client application. The standard [client](https://github.com/doughsay/room.js-client) is provided in a separate repository.
 
