@@ -8,7 +8,10 @@ dotenv.config();
 module.exports.env = process.env.NODE_ENV || 'development';
 module.exports.appName = pkg.name;
 module.exports.version = pkg.version;
-module.exports.port = loadIntegerFromEnv('PORT');
+module.exports.port = {
+  web: loadIntegerFromEnv('PORT'),
+  telnet: loadIntegerFromEnv('PORT_TELNET')
+};
 module.exports.address = loadFromEnv('ADDRESS');
 module.exports.logLevel = loadFromEnv('LOG_LEVEL');
 module.exports.maintenance = loadBooleanFromEnv('MAINTENANCE_MODE');

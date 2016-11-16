@@ -1,6 +1,7 @@
 const EventEmitter = require('events');
 const util = require('util');
 const http = require('http');
+const net = require('net');
 const socketIo = require('socket.io');
 
 const MooDB = require('./moo-db');
@@ -39,6 +40,7 @@ class RoomJSServer {
     const { maintenance } = this.config;
 
     this.server = http.createServer();
+    this.serverTelnet = net.createServer();
     this.io = socketIo(this.server);
 
     this.io.on('connection', socket => {
@@ -51,16 +53,28 @@ class RoomJSServer {
         controller.onConnection();
       }
     });
+
+    this.serverTelnet.on('connection', socket => {
+      if (maintenance) {
+        socket.emit('output', 'Server in maintenance mode. Please check back later.');
+      } else {
+        // TODO
+      }
+    });
   }
 
   start() {
-    const { port, address, version } = this.config;
+    const { port: { web, telnet }, address, version } = this.config;
 
-    this.server.listen(port, address, err => {
+    this.server.listen(web, address, err => {
       if (err) { throw err; }
-      this.world.runHook('system', 'onServerStarted');
-      this.logger.info({ version, port, address }, 'server started');
+      this.serverTelnet.listen(telnet, address, err => {
+        if (err) { throw err; }
+        this.world.runHook('system', 'onServerStarted');
+        this.logger.info({ version, address, web, telnet }, 'server started');
+      });
     });
+
   }
 
   close() {
